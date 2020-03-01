@@ -1,7 +1,10 @@
 local SetClipboardText = SetClipboardText // #420LocalizeIt
 local disconnectTable = disconnectTable || {};
 
-local function OpenPanel(ply, cmd, args, str)
+local function OpenPanel(player, cmd, args, str)
+	if IsValid(DcMain) then
+		DcMain:Remove();
+	end
 	local ply = LocalPlayer();
 	if (!ULib.ucl.query(ply, "ulx dban")) then
 		ULib.tsayError(ply, "You don't have access to this command, " .. ply:Nick() .. "!");
@@ -10,18 +13,21 @@ local function OpenPanel(ply, cmd, args, str)
 	net.Start("DisconnectsRequestTable");
 	net.SendToServer();
 
-	local main = vgui.Create( "DFrame" )
-	main:SetPos( 50,50 )
-	main:SetSize( 500, 400 )
-	main:SetTitle( "Recently Disconnected Players" )
-	main:SetVisible( true )
-	main:SetDraggable( true )
-	main:ShowCloseButton( false )
-	main:MakePopup()
-	main:Center()
+	DcMain = vgui.Create( "DFrame" )
+	DcMain:SetPos( 50,50 )
+	DcMain:SetSize( 500, 400 )
+	DcMain:SetTitle( "Recently Disconnected Players" )
+	DcMain:SetVisible( true )
+	DcMain:SetDraggable( true )
+	DcMain:ShowCloseButton( false )
+	DcMain:ShowCloseButton(true);
+	DcMain:MakePopup()
+	DcMain:Center()
+	DcMain.Paint = function (self, w, h)
+		draw.RoundedBox(8, 0, 0, w, h, Color(78, 78, 78));
+	end
 
-	local list = vgui.Create( "DListView" )
-	list:SetParent( main )
+	local list = vgui.Create("DListView", DcMain);
 	list:SetPos( 4, 27 )
 	list:SetSize( 492, 369 )
 	list:SetMultiSelect( false )
@@ -29,7 +35,10 @@ local function OpenPanel(ply, cmd, args, str)
 	list:AddColumn( "SteamID" )
 	list:AddColumn( "IP Address" )
 	list:AddColumn( "Time" )
-	list.OnRowRightClick = function( Main, line )
+	list.Paint = function (self, w, h)
+		draw.RoundedBox(8, 0, 0, w, h, Color(38, 38, 38, 125));
+	end
+	list.OnRowRightClick = function( main, line )
 		local menu = DermaMenu()
 		menu:AddOption( "Ban by SteamID", function()
 				local Frame = vgui.Create( "DFrame" )
@@ -136,10 +145,9 @@ local function OpenPanel(ply, cmd, args, str)
 		end
 		menu:Open()
 	end
-	main:ShowCloseButton(true);
 	net.Receive("DisconnectsTransferTable", function ()
 		disconnectTable = net.ReadTable();
-		if (IsValid(main)) then
+		if (IsValid(DcMain)) then
 			for i = 1, #disconnectTable do
 				list:AddLine(disconnectTable[i][2], disconnectTable[i][1], disconnectTable[i][3], disconnectTable[i][4]);
 			end
