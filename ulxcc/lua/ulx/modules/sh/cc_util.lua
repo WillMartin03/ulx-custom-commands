@@ -480,7 +480,7 @@ profile:help( "Opens target's profile" )
 
 function ulx.dban( calling_ply )
 	calling_ply:ConCommand( "xgui hide" )
-	calling_ply:ConCommand( "menu_disc" )
+	calling_ply:ConCommand( "menu_disconnects" )
 end
 local dban = ulx.command( "Utility", "ulx dban", ulx.dban, "!dban" )
 dban:defaultAccess( ULib.ACCESS_ADMIN )
