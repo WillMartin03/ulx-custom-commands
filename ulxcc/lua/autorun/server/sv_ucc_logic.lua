@@ -29,7 +29,7 @@ if (SERVER) then
 			return;
 		end
 		local rtbl = table.concat(cak, ", ")
-		if (string.len(rtbl) == 0 && table.Count(cak) == 0) then			
+		if (string.len(rtbl) == 0 && table.Count(cak) == 0) then
 			ulx.fancyLog({caa}, "#T has no friends on this server", ply)
 		else
 			ulx.fancyLog({caa}, "#T is friends with #s", ply, rtbl)
