@@ -105,7 +105,7 @@ elseif (CLIENT) then
 	function NotepadReadOnly()
 		net.Start("NotepadGetContent");
 		net.SendToServer();
-		net.Receive("NotepadGetContent", function (zeroIsCool)
+		net.Receive("NotepadContent", function (zeroIsCool)
 			if (IsValid(NotepadMain)) then
 				NotepadMain:Remove();
 			end
