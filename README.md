@@ -10,3 +10,8 @@ If you do not know how to access your server remotely, you should contact your s
 
 # Legal
 To recap what was said earlier, "we agree to remove the project from Steam workshop and from Github should Cobalt show back up and want it taken down, so long as "Cobalt" has sufficient proof that she/he is the original uploader of the project". This means that if someone proclaims to be the original author, we will not take down the project immediately until it is certain that the person claiming to be the original author, is proven to be the original author in some form. If it is proven, we will issue a warning of it's discontinuation and have the project removed from github and steam's workshop within a timely manner (5-7 business days).
+
+# Credits
+Original Creator: Cobalt
+Convert and Orignal Upload to Workshop: SirChainsmokerGollum/maxgestic
+Main Developer of changes and exploit fixer: Zero
