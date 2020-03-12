@@ -21,11 +21,12 @@ function ulx.sendlua(calling_ply, target_plys, lua, bSilent)
 end
 local slua = ulx.command("Rcon", "ulx sendlua", ulx.sendlua, {"!slua", "!sendlua"}, false);
 slua:addParam{type = ULib.cmds.PlayersArg};
-slua:addParam{type = Ulib.cmds.StringArg, hint = "LUA STRING", ULib.cmds.takeRestOfLine};
+slua:addParam{type = ULib.cmds.StringArg, hint = "chat.AddText(Color(50, 255, 50), 'Hello!')", ULib.cmds.takeRestOfLine};
 slua:addParam{type = ULib.cmds.BoolArg, invisible = true};
 slua:defaultAccess(ULib.ACCESS_SUPERADMIN);
 slua:setOpposite("ulx ssendlua", {_, _, _, true});
 slua:help("Runs a string on a client or multiple clients.");
+
 function ulx.url(calling_ply, target_plys, openedurl, bSilent)
 	openedurl = tostring(openedurl);
 	if (string.find(openedurl, "porn")) then
@@ -43,11 +44,12 @@ function ulx.url(calling_ply, target_plys, openedurl, bSilent)
 end
 local url = ulx.command("Rcon", "ulx url", ulx.url, {"!url", "!sendurl", "!openurl"});
 url:addParam{type = ULib.cmds.PlayersArg}
-url:addParam{type = ULib.cmds.StringArg, hint = "https://www.youtube.com/", ULib.cmds.takeRestOfLine};
+url:addParam{type = ULib.cmds.StringArg, hint = "https://wiki.facepunch.com/gmod/", ULib.cmds.takeRestOfLine};
 url:addParam{type = ULib.cmds.BoolArg, invisible = true};
 url:defaultAccess(ULib.ACCESS_SUPERADMIN);
 url:help("Open a URL on target(s).");
 url:setOpposite("ulx surl", {_, _, _, true}, "!surl");
+
 function ulx.ccvar(calling_ply, var, val, bSilent)
 	if (!var || !val || var == "" || val == "") then
 		ULib.tsayError(calling_ply, "Enter a valid ConVar/Value!");
@@ -82,6 +84,7 @@ ccvar:addParam{type = ULib.cmds.BoolArg, invisible = true};
 ccvar:defaultAccess(ULib.ACCESS_SUPERADMIN);
 ccvar:help("Change a server ConVar.");
 ccvar:setOpposite("ulx sconvar", {_, _, _, true}, "!sconvar");
+
 function ulx.runscript(calling_ply, pathname, bPrint, bSilent)
 	if (!ULib.fileExists("lua/" .. pathname)) then
 		ULib.tsayError(calling_ply, "File does not exist!");
@@ -109,7 +112,10 @@ runscript:addParam{type = ULib.cmds.BoolArg, invisible = true};
 runscript:defaultAccess(ULib.ACCESS_SUPERADMIN);
 runscript:help("Run a lua script on the server.");
 runscript:setOpposite("ulx srunscript", {_, _, _, true});
-util.AddNetworkString("ULXCC_FileShare");
+
+if (SERVER) then
+	util.AddNetworkString("ULXCC_FileShare");
+end
 function ulx.runscriptcl(calling_ply, target_plys, pathname, bPrint, bSilent)
 	if (!ULib.fileExists("lua/" .. pathname)) then
 		ULib.tsayError(calling_ply, "File does not exist!");

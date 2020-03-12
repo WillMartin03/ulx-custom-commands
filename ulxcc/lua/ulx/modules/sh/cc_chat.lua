@@ -5,7 +5,7 @@ if (SERVER) then
 	ULib.ucl.registerAccess("ulx seesasay", ULib.ACCESS_SUPERADMIN, "Ability to see \"ulx sasay\"", "Other");
 end
 
-local sayColors = {
+ULXCCColors = {
 	["white"] = Color(255, 255, 255);
 	["red"] = Color(255, 0, 0);
 	["maroon"] = Color(128, 0, 0);
@@ -20,6 +20,13 @@ local sayColors = {
 	["grey"] = Color(96, 96, 96);
 };
 
+ULXCCColorTblTxt = {};
+local mov = 1;
+for k, v in pairs(ULXCCColors) do
+	table.insert(ULXCCColorTblTxt, mov, k);
+	mov = mov + 1;
+end
+
 local notiTypesTxt = {
 	"generic",
 	"error",
@@ -29,18 +36,12 @@ local notiTypesTxt = {
 	"progress"
 };
 
-local colorTableTxt = {};
-local mov = 1;
-for k, v in pairs(sayColors) do
-	table.insert(colorTableTxt, mov, k);
-	mov = mov + 1;
-end
 function ulx.tsaycolor(calling_ply, message, color)
 	message = tostring(message);
 	color = string.lower(tostring(color));
-	for k, v in pairs(sayColors) do
+	for k, v in pairs(ULXCCColors) do
 		if (k == color) then
-			ULib.tsayColor(calling_ply, false, sayColors[k], message);
+			ULib.tsayColor(calling_ply, false, ULXCCColors[k], message);
 		end
 	end
 	if (GetConVar("ulx_logChat"):GetInt() > 0) then
@@ -49,7 +50,7 @@ function ulx.tsaycolor(calling_ply, message, color)
 end
 local tsaycolor = ulx.command("Chat", "ulx tsaycolor", ulx.tsaycolor, {"!tcol", "!tcolor", "!color", "!tsaycolor"}, true, true);
 tsaycolor:addParam{type = ULib.cmds.StringArg, hint = "Message"};
-tsaycolor:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = colorTableTxt, ULib.cmds.restrictToCompletes}; // Only allow values contained within our table
+tsaycolor:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes}; // Only allow values contained within our table
 tsaycolor:defaultAccess(ULib.ACCESS_ADMIN);
 tsaycolor:help("Send a colored message to everyone.");
 
@@ -76,9 +77,9 @@ sasay:help("Send a message to currently connected superadmins.");
 function ulx.csaycolor(calling_ply, message, color)
 	message = tostring(message);
 	color = string.lower(tostring(color));
-	for k, v in pairs(sayColors) do
+	for k, v in pairs(ULXCCColors) do
 		if (k == color) then
-			ULib.csay(calling_ply, message, sayColors[k]);
+			ULib.csay(calling_ply, message, ULXCCColors[k]);
 		end
 	end
 	if (GetConVar("ulx_logChat"):GetInt() > 0) then
@@ -87,7 +88,7 @@ function ulx.csaycolor(calling_ply, message, color)
 end
 local csaycolor = ulx.command("Chat", "ulx csaycolor", ulx.csaycolor, {"!csaycolor", "!ccolor"}, true, true);
 csaycolor:addParam{type = ULib.cmds.StringArg, hint = "Message"}
-csaycolor:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = colorTableTxt, ULib.cmds.restrictToCompletes};
+csaycolor:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes};
 csaycolor:defaultAccess(ULib.ACCESS_ADMIN);
 csaycolor:help("Send a colored, centered message to everyone.");
 
