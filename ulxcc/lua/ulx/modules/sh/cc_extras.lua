@@ -4,7 +4,7 @@ function injectModule()
 			ply.canbrag = true;
 		end);
 	end);
-	function starttimer(ply)
+	function startTimer(ply)
 		timer.Simple(180, function ()
 			ply.canbrag = true;
 		end);
@@ -12,7 +12,7 @@ function injectModule()
 	function ulx.brag(calling_ply)
 		if (IsValid(calling_ply) && calling_ply.canbrag) then
 			calling_ply.canbrag = false;
-			starttimer(calling_ply);
+			startTimer(calling_ply);
 			local pts = calling_ply:PS_GetPoints();
 			if (isnumber(tonumber(pts)) && (tonumber(pts) != 0)) then
 				for _, v in ipairs(player.GetHumans()) do
