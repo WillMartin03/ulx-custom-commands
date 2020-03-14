@@ -3,7 +3,7 @@ if (SERVER) then
 	con_ticket_number = 1;
 	util.AddNetworkString("cmds");
 	util.AddNetworkString("sendcmds")
-	util.AddNetworkString("cl");
+	util.AddNetworkString("cmds_cl");
 	net.Receive("sendcmds", function (_, ply)
 		local rtable = net.ReadTable();
 		local rtable2 = net.ReadTable();
@@ -14,7 +14,7 @@ if (SERVER) then
 		if (!bool) || (!tn) || (tonumber(ply.sessionid) != tn) || (con_callers[tn] != call) || (ply.callerid != con_callers[tn]) then
 			return;
 		end
-		net.Start("cl");
+		net.Start("cmds_cl");
 			net.WriteTable(rtable);
 			net.WriteTable(rtable2);
 			net.WriteString(targ);
