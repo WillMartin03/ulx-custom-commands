@@ -77,8 +77,8 @@ gravity:help("It's like mars, but it's on earth.");
 hook.Add("PlayerInitialSpawn", "FetchSpeed", function (ply)
 	timer.Simple(0, function ()
 		if (IsValid(ply)) then
-			gWalk = ply:GetWalkSpeed();
-			gRun = ply:GetRunSpeed();
+			ply.pWalk = ply:GetWalkSpeed();
+			ply.pRun = ply:GetRunSpeed();
 			if (CLIENT && GetConVar("developer"):GetInt() > 0) then
 				ULib.console(ply, "Initial Speeds Fetched!\nWalk Speed: " .. ply.pWalk .. "\nRun Speed: " .. ply.pRun);
 			end
@@ -91,7 +91,7 @@ function ulx.speed(calling_ply, target_plys, W, R)
 	R = tonumber(R);
 	for k, v in ipairs(target_plys) do
 		if (W == 0 && R == 0) then
-			GAMEMODE:SetPlayerSpeed(v, gWalk, gRun);
+			GAMEMODE:SetPlayerSpeed(v, v.pWalk, v.pRun);
 			ulx.fancyLogAdmin(calling_ply, "#A reset the walk and run speed for #T", target_plys);
 		else
 			GAMEMODE:SetPlayerSpeed(v, W, R);
