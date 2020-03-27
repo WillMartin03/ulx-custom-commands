@@ -32,8 +32,8 @@ local function voteGagDone(t, target, time, ply)
 			winnernum = numvotes;
 		end
 	end
-	local ratioNeeded = GetConVar("ulx_votegagSuccessratio"):GetInt();
-	local minVotes = GetConVar("ulx_votegagMinvotes"):GetInt();
+	local ratioNeeded = GetConVar("votegagSuccessratio"):GetInt();
+	local minVotes = GetConVar("votegagMinvotes"):GetInt();
 	local str;
 	if ((winner != 1) || (winnernum < minVotes) || (winnernum / t.voters < ratioNeeded)) then
 		str = "Vote results: User will not be gagged. (" .. (results[1] || "0") .. "/" .. t.voters .. ")";
