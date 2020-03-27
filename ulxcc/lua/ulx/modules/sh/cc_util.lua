@@ -350,7 +350,7 @@ elseif (SERVER) then
 			end
 		end
 	end);
-	hook.Add("PlayerDisconnected", "WatchedPlayerCheckDC", function ()
+	hook.Add("PlayerDisconnected", "WatchedPlayerCheckDC", function (ply)
 		local files = file.Find("watchlist/*", "DATA");
 		for _, v in pairs(files) do
 			if (ply:SteamID() == string.sub(v:gsub("X", ":"), 1, -5)) then
