@@ -374,4 +374,3 @@ if (easter_eggs_enabled) then
 	resetdata:defaultAccess(ULib.ACCESS_ADMIN);
 	resetdata:help("Reset easter egg data.");
 end
-CAT_NAME = nil;

@@ -158,5 +158,3 @@ color:addParam{type = ULib.cmds.BoolArg, invisible = true};
 color:defaultAccess(ULib.ACCESS_ADMIN);
 color:help("Change target(s) color to a selected color.");
 color:setOpposite("ulx resetcolor", {_, _, _, true}, {"!rcolor", "!rcol", "!resetcolor"});
-
-CAT_NAME = nil;
