@@ -23,9 +23,7 @@ pgag:help("Gag target(s), disables microphone using pdata.");
 pgag:setOpposite("ulx unpgag", {_, _, true}, "!unpgag");
 
 hook.Add("PlayerCanHearPlayersVoice", "ULXCC_PgagManager", function (list, talk)
-	if (talk:GetPData("permgagged") == true) then
-		return false;
-	end
+	if (!talk.cantalk) then return false; end
 end);
 
 hook.Add("PlayerDisconnected", "ULXCC_pgagDisconnect", function (ply)
@@ -40,11 +38,14 @@ end);
 
 hook.Add("PlayerAuthed", "ULXCC_SetPGagData", function (ply)
 	if (ply:GetPData("permgagged") == true) then
+		ply.cantalk = false;
 		for _, v in ipairs(player.GetAll()) do
 			if (v:IsAdmin()) then
 				ULib.tsayError(v, ply:Nick() .. " has joined and is permanently gagged.");
 			end
 		end
+	else
+		ply.cantalk = true;
 	end
 end);
 
