@@ -79,12 +79,12 @@ timer.Create("ulxcc_votingTimer", 60, 0, function ()
 			v:SetPData("votemuted", tonumber(v:GetPData("votemuted")) - 1);
 		end
 		timer.Simple(0, function ()
-			if (v:GetPData("votegagged") == (0 || "0")) then
+			if (IsValid(v) && v:GetPData("votegagged") == (0 || "0")) then
 				v:RemovePData("votegagged");
 				v.cc_voting_votegagged = nil;
 				ULib.tsay(nil, v:Nick() .. " was auto-ungagged.");
 			end
-			if (v:GetPData("votemuted") == (0 || "0")) then
+			if (IsValid(v) && v:GetPData("votemuted") == (0 || "0")) then
 				v:RemovePData("votemuted");
 				ULib.tsay(nil, v:Nick() .. " was auto-unmuted.");
 			end
