@@ -695,7 +695,7 @@ exit:defaultAccess(ULib.ACCESS_ADMIN);
 exit:help("Force a player out of a vehicle.");
 
 function ulx.forcerespawn(calling_ply, target_plys)
-	for _, v in ipairs(player.GetAll()) do
+	for _, v in pairs(target_plys) do
 		if (v:Alive()) then
 			v:Kill();
 		end
