@@ -130,7 +130,7 @@ fteleport:help("Teleports target and freezes them.");
 local savedPos = {};
 function ulx.setwarp(calling_ply, name)
 	if (!name[1]) then return; end
-	savedpos[tostring(name[1])] = calling_ply:GetPos();
+	savedPos[tostring(name[1])] = calling_ply:GetPos();
 	for _, v in ipairs(player.GetAll()) do
 		if (v:IsUserGroup("operator") || v:IsAdmin()) then
 			ULib.tsayColor(v, false, Color(255, 255, 255), "A new warp location has been created: ", Color(255, 0, 0), name);
