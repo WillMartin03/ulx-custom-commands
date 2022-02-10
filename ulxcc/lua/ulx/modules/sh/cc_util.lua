@@ -529,7 +529,8 @@ function ulx.ip(calling_ply, target_ply)
 		ULib.tsayError(calling_ply, "This command can only be used by admins or higher.");
 		return;
 	end
-	calling_ply:SendLua([[SetClipboardText("]] .. tostring(string.sub(tostring(target_ply:IPAddress())), 1, string.len(tostring(target_ply:IPAddress()) - 6)) .. [[")]]);
+	local ip = tostring(target_ply:IPAddress())
+	calling_ply:SendLua([[SetClipboardText("]] .. tostring(string.sub(ip, 1, string.len(ip) - 6)) .. [[")]]);
 	ulx.fancyLogAdmin(calling_ply, true, "#A copied the IP of #T", target_ply);
 end
 local ip = ulx.command("Utility", "ulx ip", ulx.ip, "!copyip", true);

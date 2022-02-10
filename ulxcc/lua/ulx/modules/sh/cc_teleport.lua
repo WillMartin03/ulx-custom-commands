@@ -4,8 +4,8 @@
 
 --This local function is required for ULX Bring to work--
 ------------------------------------------------------------------------------------
-local function playerSend(from, to, force)
-	if (!to:IsInWorld() || !force) then return false; end
+local function playerSend(from, to, bForce)
+	if (!to:IsInWorld() && !bForce) then return false; end
 	local yawF = to:EyeAngles().yaw;
 	local directions = {
 		math.NormalizeAngle(yawF - 180), // Behind
@@ -21,7 +21,7 @@ local function playerSend(from, to, force)
 	local tr = util.TraceEntity(t, from);
 	while tr.Hit do
 		i = i + 1;
-		if ((i > #directions) && force) then
+		if ((i > #directions) && bForce) then
 			from.ulx_prevpos = from:GetPos();
 			from.ulx_prevang = from:EyeAngles();
 			return to:GetPos() + Angle(0, directions[1], 0):Forward() * 47;
@@ -58,10 +58,9 @@ function ulx.fbring(calling_ply, target_ply)
 		return;
 	end
 	if (calling_ply:InVehicle()) then
-		ULib.tsayError(calling_ply, "Please leave the vehicle first!", true);
-		return;
+		calling_ply:ExitVehicle()
 	end
-	local newPos = playerSend(target_ply, calling_ply, target_ply:GetMoveAngles() == MOVETYPE_NOCLIP);
+	local newPos = playerSend(target_ply, calling_ply, calling_ply:GetMoveType() == MOVETYPE_NOCLIP);
 	if (!newPos) then
 		ULib.tsayError(calling_ply, "Can't find a place to put the target!", true);
 		return;
@@ -72,14 +71,13 @@ function ulx.fbring(calling_ply, target_ply)
 	local newAng = (calling_ply:GetPos() - newPos):Angle();
 	target_ply:SetPos(newPos);
 	target_ply:SetEyeAngles(newAng);
-	target_ply:SetLocalVelocity(Vector(0, 0, 0));
-	target_ply:Lock();
+	target_ply:Lock()
 	target_ply.frozen = true;
 	ulx.setExclusive(target_ply, "frozen");
 	ulx.fancyLogAdmin(calling_ply, "#A brought and froze #T", target_ply);
 end
 local fbring = ulx.command("Teleport", "ulx fbring", ulx.fbring, "!fbring");
-fbring:addParam{type = ULib.cmds.PlayerArg, target = "!^"};
+fbring:addParam{type = ULib.cmds.PlayerArg};
 fbring:defaultAccess(ULib.ACCESS_ADMIN);
 fbring:help("Brings target to you and freezes them.");
 
@@ -114,7 +112,7 @@ function ulx.fteleport(calling_ply, target_ply)
 		target_ply:ExitVehicle();
 	end
 	target_ply:SetPos(pos);
-	target_ply:SetLocalVelocity(Vector(0, 0, 0));
+	target_ply:Lock()
 	target_ply.frozen = true;
 	ulx.setExclusive(target_ply, "frozen");
 	ulx.fancyLogAdmin(calling_ply, "#A teleported and froze #T", target_ply);

@@ -190,18 +190,9 @@ ammo:help("Set a player's ammo");
 ammo:setOpposite("ulx setammo", {_, _, _, true}, "!setammo");
 
 function ulx.scale(calling_ply, target_plys, scale)
-	if (scale > 65535) then scale = 65535; end // 65535 is the max a 16 bit int can hold. Removing this and using something higher than 65535 will result in a lua error / !scale comamnd not working properly.
 	for k, v in ipairs(target_plys) do
-		if (SERVER && IsValid(v)) then
+		if (IsValid(v)) then
 			v:SetModelScale(scale, 1);
-			net.Start("SendViewModelCalc");
-				net.WriteInt(scale, 16);
-				if (scale == 1) then
-					net.WriteBool(true); // We're setting them back to normal.
-				else
-					net.WriteBool(false);
-				end
-			net.Send(v);
 		end
 	end
 	ulx.fancyLogAdmin(calling_ply, "#A set the scale for #T to #i", target_plys, scale);
@@ -221,7 +212,6 @@ local zaptable = {
 
 if (SERVER) then
 	util.AddNetworkString("ulxcc_blur");
-	util.AddNetworkString("SendViewModelCalc");
 elseif (CLIENT) then
 	net.Receive("ulxcc_blur", function ()
 		local n = 10;
@@ -237,23 +227,6 @@ elseif (CLIENT) then
 			end);
 			timer.Simple(2.5, function ()
 				hook.Remove("RenderScreenspaceEffects", "DrawMotionBlur");
-			end);
-		end
-	end);
-	net.Receive("SendViewModelCalc", function ()
-		local pScale = net.ReadInt(16);
-		local normal = net.ReadBool();
-		if (normal) then
-			hook.Remove("CalcView", "ScaleCalcView");
-		else
-			hook.Add("CalcView", "ScaleCalcView", function (ply, pos, angles, fov)
-				local view = {
-					origin = pos + Vector(0, 0, pScale * 55),
-					angles = angles,
-					fov = fov,
-					drawviewer = false
-				};
-				return view;
 			end);
 		end
 	end);
