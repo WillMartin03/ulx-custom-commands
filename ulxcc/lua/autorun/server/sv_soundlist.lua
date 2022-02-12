@@ -1,7 +1,7 @@
-util.AddNetworkString("sendsoundlist");
-util.AddNetworkString("sendsoundgroups");
+util.AddNetworkString("sendsoundlist")
+util.AddNetworkString("sendsoundgroups")
 CreateConVar( "soundlist_usedefaultsounds", "0", { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_GAMEDLL } )
-local soundTable = {};
+local soundTable = {}
 local blockedGroups = {
 	"blocked_groupname1",
 	"blocked_groupname2"
@@ -9,10 +9,10 @@ local blockedGroups = {
 	// Use only lowercase even if the group name has uppercase.
 }
 hook.Add("PlayerInitialSpawn", "ULXCC_SendBlockedGroups", function (ply)
-	net.Start("sendsoundgroups");
-		net.WriteTable(blockedGroups);
-	net.Send(ply);
-end);
+	net.Start("sendsoundgroups")
+		net.WriteTable(blockedGroups)
+	net.Send(ply)
+end)
 local blacklist = {
 	"sound/ambient/construct_tone.wav",
 	"sound/ambient/forest_day.wav",
@@ -106,42 +106,42 @@ local function FindAllIn( dir, path )
 end
 
 local function populateSounds()
-	soundTable = {};
-	local allSounds = FindAllIn("sound", "MOD");
+	soundTable = {}
+	local allSounds = FindAllIn("sound", "MOD")
 	if (GetConVar("soundlist_usedefaultsounds"):GetInt() > 0) then
 		for k, v in pairs(allSounds) do
-			table.insert(soundTable, v);
+			table.insert(soundTable, v)
 		end
 	else
 		for k, v in pairs(allSounds) do
 			if (!table.HasValue(blacklist, v)) then
-				table.insert(soundTable, v);
+				table.insert(soundTable, v)
 			end
 		end
 	end
 end
 
 cvars.AddChangeCallback( "soundlist_usedefaultsounds", function( cvarName, oldValue, newValue )
-	populateSounds();
-	local send = {};
+	populateSounds()
+	local send = {}
 	for k, v in ipairs(player.GetAll()) do
 		if (v:IsPlayer() && !table.HasValue(blockedGroups, string.lower(tostring(v:GetUserGroup())))) then
-			table.insert(send, v);
+			table.insert(send, v)
 		end
 	end
-	net.Start("sendsoundlist");
-		net.WriteTable(soundTable);
+	net.Start("sendsoundlist")
+		net.WriteTable(soundTable)
 	net.Send(send)
 	Msg( "[CC] ConVar \"soundlist_usedefaultsounds\" changed to " .. newValue .. "\n" )
 end )
 
 net.Receive("sendsoundlist", function (_, ply)
 	if (!table.HasValue(blockedGroups, string.lower(tostring(ply:GetUserGroup())))) then
-		populateSounds();
-		net.Start("sendsoundlist");
-			net.WriteTable(soundTable);
-		net.Send(ply);
+		populateSounds()
+		net.Start("sendsoundlist")
+			net.WriteTable(soundTable)
+		net.Send(ply)
 	else
-		ply:ChatPrint("[ERROR]: You don't have access to this command, " .. ((ply.Nick && ply:Nick()) || "Console")  .. "!");
+		ply:ChatPrint("[ERROR]: You don't have access to this command, " .. ((ply.Nick && ply:Nick()) || "Console")  .. "!")
 	end
-end);
+end)

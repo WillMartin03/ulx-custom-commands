@@ -1,17 +1,17 @@
 local SetClipboardText = SetClipboardText // #420LocalizeIt
-local disconnectTable = disconnectTable || {};
+local disconnectTable = disconnectTable || {}
 
 local function OpenPanel(player, cmd, args, str)
 	if IsValid(DcMain) then
-		DcMain:Remove();
+		DcMain:Remove()
 	end
-	local ply = LocalPlayer();
+	local ply = LocalPlayer()
 	if (!ULib.ucl.query(ply, "ulx dban")) then
-		ULib.tsayError(ply, "You don't have access to this command, " .. ply:Nick() .. "!");
-		return;
+		ULib.tsayError(ply, "You don't have access to this command, " .. ply:Nick() .. "!")
+		return
 	end
-	net.Start("DisconnectsRequestTable");
-	net.SendToServer();
+	net.Start("DisconnectsRequestTable")
+	net.SendToServer()
 
 	DcMain = vgui.Create( "DFrame" )
 	DcMain:SetPos( 50,50 )
@@ -20,14 +20,14 @@ local function OpenPanel(player, cmd, args, str)
 	DcMain:SetVisible( true )
 	DcMain:SetDraggable( true )
 	DcMain:ShowCloseButton( false )
-	DcMain:ShowCloseButton(true);
+	DcMain:ShowCloseButton(true)
 	DcMain:MakePopup()
 	DcMain:Center()
 	DcMain.Paint = function (self, w, h)
-		draw.RoundedBox(8, 0, 0, w, h, Color(78, 78, 78));
+		draw.RoundedBox(8, 0, 0, w, h, Color(78, 78, 78))
 	end
 
-	local list = vgui.Create("DListView", DcMain);
+	local list = vgui.Create("DListView", DcMain)
 	list:SetPos( 4, 27 )
 	list:SetSize( 492, 369 )
 	list:SetMultiSelect( false )
@@ -36,7 +36,7 @@ local function OpenPanel(player, cmd, args, str)
 	list:AddColumn( "IP Address" )
 	list:AddColumn( "Time" )
 	list.Paint = function (self, w, h)
-		draw.RoundedBox(8, 0, 0, w, h, Color(38, 38, 38, 125));
+		draw.RoundedBox(8, 0, 0, w, h, Color(38, 38, 38, 125))
 	end
 	list.OnRowRightClick = function( main, line )
 		local menu = DermaMenu()
@@ -146,13 +146,13 @@ local function OpenPanel(player, cmd, args, str)
 		menu:Open()
 	end
 	net.Receive("DisconnectsTransferTable", function ()
-		disconnectTable = net.ReadTable();
+		disconnectTable = net.ReadTable()
 		if (IsValid(DcMain)) then
 			for i = 1, #disconnectTable do
-				list:AddLine(disconnectTable[i][2], disconnectTable[i][1], disconnectTable[i][3], disconnectTable[i][4]);
+				list:AddLine(disconnectTable[i][2], disconnectTable[i][1], disconnectTable[i][3], disconnectTable[i][4])
 			end
 		end
-	end);
+	end)
 end
 
-concommand.Add("menu_disconnects", OpenPanel);
+concommand.Add("menu_disconnects", OpenPanel)

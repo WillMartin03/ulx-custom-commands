@@ -1,4 +1,4 @@
-local CAT_NAME = "Fun";
+local CAT_NAME = "Fun"
 
 local ULXCCTrails = {
 	"trails/tube.vmt",
@@ -9,7 +9,7 @@ local ULXCCTrails = {
 	"trails/physbeam.vmt",
 	"trails/laser.vmt",
 	"trails/love.vmt"
-};
+}
 
 local ULXCCMaterials = {
 	"nil",
@@ -54,107 +54,107 @@ local ULXCCMaterials = {
 	"phoenix_storms/wire/pcb_red",
 	"phoenix_storms/wire/pcb_blue",
 	"hunter/myplastic"
-};
+}
 
-local trailtbl = {};
+local trailtbl = {}
 function ulx.trail(calling_ply, target_plys, color, startWidth, endWidth, lifeTime, texture, bRemove)
 	if (!endWidth) then
-		endWidth = startWidth;
-		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"endWidth\". Value has been set to startWidth.");
+		endWidth = startWidth
+		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"endWidth\". Value has been set to startWidth.")
 	end
 	if (!lifeTime) then
-		lifeTime = 16;
-		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"lifeTime\". Value has been set to 16.");
+		lifeTime = 16
+		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"lifeTime\". Value has been set to 16.")
 	end
 	if (!texture) then
-		texture = table.Random(ULXCCTrails);
-		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"texture\". Value has been randomized to \"" .. tostring(texture) .. "\".");
+		texture = table.Random(ULXCCTrails)
+		calling_ply:ChatPrint("[CONSOLE]: Invalid value for \"texture\". Value has been randomized to \"" .. tostring(texture) .. "\".")
 	end
 	if (!bRemove) then
-		color = string.lower(tostring(color));
+		color = string.lower(tostring(color))
 		for k, v in pairs(ULXCCColors) do
 			if (k == color) then
-				color = ULXCCColors[k];
+				color = ULXCCColors[k]
 			end
 		end
 		for i = 1, #target_plys do
 			if (trailtbl[target_plys[i]:SteamID()]) then
-				table.RemoveByValue(trailtbl, target_plys[i]:SteamID());
-				SafeRemoveEntity(trailtbl[target_plys[i]:SteamID()]);
+				table.RemoveByValue(trailtbl, target_plys[i]:SteamID())
+				SafeRemoveEntity(trailtbl[target_plys[i]:SteamID()])
 			end
-			trailtbl[target_plys[i]:SteamID()] = util.SpriteTrail(target_plys[i], 0, color, true, startWidth, endWidth, lifeTime, 1 / (startWidth + endWidth) * 0.5, texture);
+			trailtbl[target_plys[i]:SteamID()] = util.SpriteTrail(target_plys[i], 0, color, true, startWidth, endWidth, lifeTime, 1 / (startWidth + endWidth) * 0.5, texture)
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A gave trails to #T", target_plys);
+		ulx.fancyLogAdmin(calling_ply, "#A gave trails to #T", target_plys)
 	else
 		for i = 1, #target_plys do
 			if (trailtbl[target_plys[i]:SteamID()]) then
-				table.RemoveByValue(trailtbl, target_plys[i]:SteamID());
-				SafeRemoveEntity(trailtbl[target_plys[i]:SteamID()]);
+				table.RemoveByValue(trailtbl, target_plys[i]:SteamID())
+				SafeRemoveEntity(trailtbl[target_plys[i]:SteamID()])
 			end
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A removed trails from #T", target_plys);
+		ulx.fancyLogAdmin(calling_ply, "#A removed trails from #T", target_plys)
 	end
 end
 
-local trail = ulx.command(CAT_NAME, "ulx trail", ulx.trail, "!trail");
-trail:addParam{type = ULib.cmds.PlayersArg};
-trail:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes};
-trail:addParam{type = ULib.cmds.NumArg, default = 16, hint = "Start Width"};
-trail:addParam{type = ULib.cmds.NumArg, default = 0, hint = "End Width"};
-trail:addParam{type = ULib.cmds.NumArg, default = 5, hint = "Length"};
-trail:addParam{type = ULib.cmds.StringArg, hint = "type", completes = ULXCCTrails, ULib.cmds.restrictToCompletes};
-trail:addParam{type = ULib.cmds.BoolArg, invisible = true};
-trail:defaultAccess(ULib.ACCESS_ADMIN);
-trail:help("Attach a trail to the selected target(s).");
-trail:setOpposite("ulx removetrail", {_, _, _, _, _, _, _, true}, "!removetrail");
+local trail = ulx.command(CAT_NAME, "ulx trail", ulx.trail, "!trail")
+trail:addParam{type = ULib.cmds.PlayersArg}
+trail:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes}
+trail:addParam{type = ULib.cmds.NumArg, default = 16, hint = "Start Width"}
+trail:addParam{type = ULib.cmds.NumArg, default = 0, hint = "End Width"}
+trail:addParam{type = ULib.cmds.NumArg, default = 5, hint = "Length"}
+trail:addParam{type = ULib.cmds.StringArg, hint = "type", completes = ULXCCTrails, ULib.cmds.restrictToCompletes}
+trail:addParam{type = ULib.cmds.BoolArg, invisible = true}
+trail:defaultAccess(ULib.ACCESS_ADMIN)
+trail:help("Attach a trail to the selected target(s).")
+trail:setOpposite("ulx removetrail", {_, _, _, _, _, _, _, true}, "!removetrail")
 
 function ulx.material(calling_ply, target_plys, material, bReset)
 	if (!material) then
-		material = table.Random(ULXCCTrails);
+		material = table.Random(ULXCCTrails)
 	end
 	if (!bReset) then
 		for _, v in ipairs(target_plys) do
-			v:SetMaterial(material);
+			v:SetMaterial(material)
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A set the material for #T to #s", target_plys, material);
+		ulx.fancyLogAdmin(calling_ply, "#A set the material for #T to #s", target_plys, material)
 	else
 		for _, v in ipairs(target_plys) do
-			v:SetMaterial(nil);
+			v:SetMaterial(nil)
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A reset the material for #T", target_plys);
+		ulx.fancyLogAdmin(calling_ply, "#A reset the material for #T", target_plys)
 	end
 end
-local material = ulx.command(CAT_NAME, "ulx material", ulx.material, {"!mat", "!material"});
-material:addParam{type = ULib.cmds.PlayersArg};
-material:addParam{type = ULib.cmds.StringArg, hint = "material", completes = ULXCCMaterials, ULib.cmds.restrictToCompletes};
-material:addParam{type = ULib.cmds.BoolArg, invisible = true};
-material:help("Set a player's material.");
-material:defaultAccess(ULib.ACCESS_ADMIN);
-material:setOpposite("ulx resetmaterial", {_, _, _, true}, {"!rmat", "!resetmaterial"});
+local material = ulx.command(CAT_NAME, "ulx material", ulx.material, {"!mat", "!material"})
+material:addParam{type = ULib.cmds.PlayersArg}
+material:addParam{type = ULib.cmds.StringArg, hint = "material", completes = ULXCCMaterials, ULib.cmds.restrictToCompletes}
+material:addParam{type = ULib.cmds.BoolArg, invisible = true}
+material:help("Set a player's material.")
+material:defaultAccess(ULib.ACCESS_ADMIN)
+material:setOpposite("ulx resetmaterial", {_, _, _, true}, {"!rmat", "!resetmaterial"})
 
 function ulx.color(calling_ply, target_plys, color, bReset)
 	if (bReset) then
 		for _, v in ipairs(target_plys) do
-			v:SetColor(255, 255, 255);
+			v:SetColor(255, 255, 255)
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A reset the color for #T", target_plys);
+		ulx.fancyLogAdmin(calling_ply, "#A reset the color for #T", target_plys)
 	else
-		color = string.lower(tostring(color));
+		color = string.lower(tostring(color))
 		for k, v in pairs(ULXCCColors) do
 			if (k == color) then
-				color = ULXCCColors[k];
+				color = ULXCCColors[k]
 			end
 		end
 		for _, v in ipairs(target_plys) do
-			v:SetColor(color);
+			v:SetColor(color)
 		end
-		ulx.fancyLogAdmin(calling_ply, "#A set the color for #T to #s", target_plys, color);
+		ulx.fancyLogAdmin(calling_ply, "#A set the color for #T to #s", target_plys, color)
 	end
 end
-local color = ulx.command(CAT_NAME, "ulx color", ulx.color, {"!color", "!setcolor"});
-color:addParam{type = ULib.cmds.PlayersArg};
-color:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes};
-color:addParam{type = ULib.cmds.BoolArg, invisible = true};
-color:defaultAccess(ULib.ACCESS_ADMIN);
-color:help("Change target(s) color to a selected color.");
-color:setOpposite("ulx resetcolor", {_, _, _, true}, {"!rcolor", "!rcol", "!resetcolor"});
+local color = ulx.command(CAT_NAME, "ulx color", ulx.color, {"!color", "!setcolor"})
+color:addParam{type = ULib.cmds.PlayersArg}
+color:addParam{type = ULib.cmds.StringArg, hint = "Color", completes = ULXCCColorTblTxt, ULib.cmds.restrictToCompletes}
+color:addParam{type = ULib.cmds.BoolArg, invisible = true}
+color:defaultAccess(ULib.ACCESS_ADMIN)
+color:help("Change target(s) color to a selected color.")
+color:setOpposite("ulx resetcolor", {_, _, _, true}, {"!rcolor", "!rcol", "!resetcolor"})
