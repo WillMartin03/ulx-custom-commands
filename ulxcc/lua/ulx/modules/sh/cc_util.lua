@@ -633,13 +633,15 @@ hide:addParam{type = ULib.cmds.StringArg, hint = "command", ULib.cmds.takeRestOf
 hide:defaultAccess(ULib.ACCESS_SUPERADMIN)
 hide:help("Run a command without it displaying the log echo.")
 
-function ulx.administrate(calling_ply, bRevoke)
-	if (bRevoke) then
+function ulx.administrate(calling_ply)
+	if (calling_ply.isAdministrating) then
+		calling_ply.isAdministrating = false
 		calling_ply:GodDisable()
 		ULib.invisible(calling_ply, false, 0)
 		calling_ply:SetMoveType(MOVETYPE_WALK)
 		ulx.fancyLogAdmin(calling_ply, true, "#A has stopped administrating")
 	else
+		calling_ply.isAdministrating = true
 		calling_ply:GodEnable()
 		ULib.invisible(calling_ply, true, 0)
 		calling_ply:SetMoveType(MOVETYPE_NOCLIP)
@@ -647,10 +649,8 @@ function ulx.administrate(calling_ply, bRevoke)
 	end
 end
 local administrate = ulx.command("Utility", "ulx administrate", ulx.administrate, {"!admin", "!administrate"}, true)
-administrate:addParam{type = ULib.cmds.BoolArg, invisible = true}
 administrate:defaultAccess(ULib.ACCESS_SUPERADMIN)
 administrate:help("Cloak yourself, noclip yourself, and god yourself.")
-administrate:setOpposite("ulx unadministrate", {_, true}, "!unadministrate", true)
 
 function ulx.enter(calling_ply, target_ply)
 	local vehicle = calling_ply:GetEyeTrace().Entity
