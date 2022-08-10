@@ -183,7 +183,7 @@ function ulx.ammo(calling_ply, target_plys, amount, bSetAmmo)
 end
 local ammo = ulx.command(CAT_NAME, "ulx giveammo", ulx.ammo, "!giveammo")
 ammo:addParam{type = ULib.cmds.PlayersArg}
-ammo:addParam{type = ULib.cmds.NumArg, min = 0, hint = "amount"}
+ammo:addParam{type = ULib.cmds.NumArg, min = 0, max = 9999, hint = "amount"}
 ammo:addParam{type = ULib.cmds.BoolArg, invisible = true}
 ammo:defaultAccess(ULib.ACCESS_ADMIN)
 ammo:help("Set a player's ammo")
