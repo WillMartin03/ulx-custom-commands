@@ -67,30 +67,32 @@ votegag:addParam{type = ULib.cmds.NumArg, min = 0, max = 180, default = 10, hint
 votegag:defaultAccess(ULib.ACCESS_ALL)
 votegag:help("Starts a public vote gag against target.")
 
-timer.Create("ulxcc_votingTimer", 60, 0, function ()
-	for _, v in ipairs(player.GetHumans()) do
-		local g = v:GetPData("votegagged")
-		if (g && g != (0 || "0") && !v.cc_voting_votegagged) then
-			v.cc_voting_votegagged = true
-			v:SetPData("votegagged", tonumber(g) - 1)
-		end
-		local m = v:GetPData("votemuted")
-		if (m && (m != (0 || "0"))) then
-			v:SetPData("votemuted", tonumber(v:GetPData("votemuted")) - 1)
-		end
-		timer.Simple(0, function ()
-			if (IsValid(v) && v:GetPData("votegagged") == (0 || "0")) then
-				v:RemovePData("votegagged")
-				v.cc_voting_votegagged = nil
-				ULib.tsay(nil, v:Nick() .. " was auto-ungagged.")
+if (SERVER) then
+	timer.Create("ulxcc_votingTimer", 60, 0, function ()
+		for _, v in ipairs(player.GetHumans()) do
+			local g = v:GetPData("votegagged")
+			if (g && g != (0 || "0") && !v.cc_voting_votegagged) then
+				v.cc_voting_votegagged = true
+				v:SetPData("votegagged", tonumber(g) - 1)
 			end
-			if (IsValid(v) && v:GetPData("votemuted") == (0 || "0")) then
-				v:RemovePData("votemuted")
-				ULib.tsay(nil, v:Nick() .. " was auto-unmuted.")
+			local m = v:GetPData("votemuted")
+			if (m && (m != (0 || "0"))) then
+				v:SetPData("votemuted", tonumber(v:GetPData("votemuted")) - 1)
 			end
-		end)
-	end
-end)
+			timer.Simple(0, function ()
+				if (IsValid(v) && v:GetPData("votegagged") == (0 || "0")) then
+					v:RemovePData("votegagged")
+					v.cc_voting_votegagged = nil
+					ULib.tsay(nil, v:Nick() .. " was auto-ungagged.")
+				end
+				if (IsValid(v) && v:GetPData("votemuted") == (0 || "0")) then
+					v:RemovePData("votemuted")
+					ULib.tsay(nil, v:Nick() .. " was auto-unmuted.")
+				end
+			end)
+		end
+	end)
+end
 
 function ulx.unvotegag(calling_ply, target_plys)
 	for _, v in ipairs(target_plys) do
