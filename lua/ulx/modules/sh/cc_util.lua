@@ -884,4 +884,95 @@ end
 local watchlist = ulx.command("Utility", "ulx watchlist", ulx.watchlist, "!watchlist", true)
 watchlist:defaultAccess(ULib.ACCESS_ADMIN)
 watchlist:help("View the watchlist")
-// Zero if you don't stop using semicolin's I'm going to fucking kill you - Kam
+
+function ulx.vban(calling_ply, target_ply, minutes, should_unban)
+	if (IsValid(target_ply)) then
+		target_ply:ExitVehicle()
+		if (!should_unban) then
+			timer.Destroy("vban_" .. target_ply:EntIndex())
+			target_ply.vehicleBanned = true
+			target_ply.vBanTime = minutes
+			if (minutes != 0) then
+				ulx.fancyLogAdmin(calling_ply, false, "#A banned #T from using vehicles for #s minutes", target_ply, minutes)
+				timer.Create("vban_" .. target_ply:EntIndex(), 60, minutes, function ()
+					target_ply.vBanTime = target_ply.vBanTime - 1
+					if (target_ply.vBanTime == 0) then
+						ulx.fancyLogAdmin(calling_ply, true, "#T can use vehicles again.", target_ply)
+						target_ply:ChatPrint("You are no longer banned from using vehicles.")
+						target_ply.vehicleBanned = false
+					end
+				end)
+			else
+				ulx.fancyLogAdmin(calling_ply, false, "#A banned #T from using vehicles indefinitely", target_ply)
+			end
+		else
+			if (!target_ply.vehicleBanned) then return end
+			timer.Destroy("vban_" .. target_ply:EntIndex())
+			target_ply.vehicleBanned = false
+			target_ply.vBanTime = 0
+			ulx.fancyLogAdmin(calling_ply, false, "#A unbanned #T from using vehicles", target_ply)
+		end
+	end
+end
+local vban = ulx.command("Utility", "ulx vban", ulx.vban, "!vban", true)
+vban:addParam{type = ULib.cmds.PlayerArg}
+vban:addParam{type = ULib.cmds.NumArg, default = 5, hint = "minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min = 0}
+vban:addParam{type = ULib.cmds.BoolArg, invisible = true}
+vban:setOpposite("ulx unvban", {_, _, _, true}, "!unvban")
+vban:defaultAccess(ULib.ACCESS_ADMIN)
+vban:help("Stops a player (temporarily) from entering vehicles.")
+
+function ulx.propban(calling_ply, target_ply, minutes, should_unban)
+	if (IsValid(target_ply)) then
+		if (!should_unban) then
+			timer.Destroy("propban_" .. target_ply:EntIndex())
+			target_ply.propBanned = true
+			target_ply.propBanTime = minutes
+			if (minutes != 0) then
+				ulx.fancyLogAdmin(calling_ply, false, "#A banned #T from spawning props for #s minutes", target_ply, minutes)
+				timer.Create("propban_" .. target_ply:EntIndex(), 60, minutes, function ()
+					target_ply.propBanTime = target_ply.propBanTime - 1
+					if (target_ply.propBanTime == 0) then
+						ulx.fancyLogAdmin(calling_ply, true, "#T can spawn props again", target_ply)
+						target_ply:ChatPrint("You are no longer banned from spawning props.")
+						target_ply.propBanned = false
+					end
+				end)
+			else
+				ulx.fancyLogAdmin(calling_ply, false, "#A banned #T from spawning props indefinitely", target_ply)
+			end
+		else
+			if (!target_ply.propBanned) then return end
+			timer.Destroy("propban_" .. target_ply:EntIndex())
+			target_ply.propBanned = false
+			target_ply.propBanTime = 0
+			ulx.fancyLogAdmin(calling_ply, false, "#A unbanned #T from spawning props", target_ply)
+		end
+	end
+end
+local propban = ulx.command("Utility", "ulx propban", ulx.propban, "!propban", true)
+propban:addParam{type = ULib.cmds.PlayerArg}
+propban:addParam{type = ULib.cmds.NumArg, default = 5, hint = "minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString}
+propban:addParam{type = ULib.cmds.BoolArg, invisible = true}
+propban:setOpposite("ulx unpropban", {_, _, _, true}, "!unpropban")
+propban:defaultAccess(ULib.ACCESS_ADMIN)
+propban:help("Stops a player (temporarily) from spawning props.")
+
+if (SERVER) then
+	hook.Add("CanPlayerEnterVehicle", "VehicleBanCheck", function (ply, veh, role)
+		if (ply.vehicleBanned) then
+			ply:ChatPrint("[ERROR]: You're banned from using vehicles for " .. (ply.vBanTime || 1) .. " minutes!")
+			return false;
+		end
+	end)
+	hook.Add("PlayerSpawnProp", "PropBanCheck", function (ply, model)
+		if (ply.propBanned) then
+			ply:ChatPrint("[ERROR]: You're banned from spawning props for " .. (ply.propBanTime || 1) .. " minutes!")
+			return false
+		end
+	end)
+	hook.Add("PlayerDisconnected", "UlxCCPlayerLeft", function (ply)
+		timer.Destroy("vban_" .. ply:EntIndex())
+		timer.Destroy("propban_" .. ply:EntIndex())
+	end)
+end

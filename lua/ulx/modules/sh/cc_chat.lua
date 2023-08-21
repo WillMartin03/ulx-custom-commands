@@ -21,10 +21,8 @@ ULXCCColors = {
 }
 
 ULXCCColorTblTxt = {}
-local mov = 1
-for k, v in pairs(ULXCCColors) do
-	table.insert(ULXCCColorTblTxt, mov, k)
-	mov = mov + 1
+for k, _ in pairs(ULXCCColors) do
+    table.insert(ULXCCColorTblTxt, k)
 end
 
 local notiTypesTxt = {
