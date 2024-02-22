@@ -78,8 +78,14 @@ if (CLIENT) then
 	concommand.Add("thirdperson_toggle", function ()
 		enabled = !enabled
 		if (enabled) then
+			if (IsValid(ply:GetActiveWeapon())) then
+				ply:GetActiveWeapon().AccurateCrosshair = true
+			end
 			chat.AddText(Color(162, 255, 162), "Third-person mode enabled.")
 		else
+			if (IsValid(LocalPlayer():GetActiveWeapon())) then
+				LocalPlayer():GetActiveWeapon().AccurateCrosshair = false
+			end
 			chat.AddText(Color(255, 162, 162), "Third-person mode disabled.")
 		end
 	end)
@@ -88,11 +94,8 @@ if (CLIENT) then
 			return true
 		end
 	end)
-	hook.Add("CalcView", "ThirdPersonView", function (ply, pos, ang, fov, madeByZero)
+	hook.Add("CalcView", "ThirdPersonView", function (ply, pos, ang, fov)
 		if (enabled && IsValid(ply) && ply:Alive()) then
-			if (IsValid(ply:GetActiveWeapon())) then
-				ply:GetActiveWeapon().AccurateCrosshair = true
-			end
 			local view = {}
 			view.origin = (pos - (ang:Forward() * 70) + (ang:Right() * 20) + (ang:Up() * 5))
 			view.ang = (ply:EyeAngles() + Angle(1, 1, 0))

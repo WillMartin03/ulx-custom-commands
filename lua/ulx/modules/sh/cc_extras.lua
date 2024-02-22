@@ -64,7 +64,7 @@ function injectPointshop1Module()
 	givepoints:defaultAccess(ULib.ACCESS_SUPERADMIN)
 end
 
-timer.Simple(3, function (MadeByZero)
+timer.Simple(3, function ()
 	if (istable(PS)) then
 		print("[ULXCC]: Pointshop is installed! Adding pointshop module!")
 		injectPointshop1Module()
