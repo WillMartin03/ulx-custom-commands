@@ -2,6 +2,7 @@
 --  This file holds chat commands  --
 -------------------------------------
 if (SERVER) then
+	util.AddNetworkString("ulxcc_csay")
 	ULib.ucl.registerAccess("ulx seesasay", ULib.ACCESS_SUPERADMIN, "Ability to see \"ulx sasay\"", "Other")
 end
 
@@ -77,7 +78,15 @@ function ulx.csaycolor(calling_ply, message, color)
 	color = string.lower(tostring(color))
 	for k, v in pairs(ULXCCColors) do
 		if (k == color) then
-			ULib.csay(calling_ply, message, ULXCCColors[k])
+			-- Due to updates with ULib (specifically, ULib.csay), we have to use this as a workaround.
+			if (IsValid(ply)) then
+				ULib.csay(calling_ply, message, ULXCCColors[k])
+			elseif (SERVER) then
+				net.Start("ulxcc_csay")
+				net.WriteString(message)
+				net.WriteColor(ULXCCColors[k])
+				net.Broadcast()
+			end
 		end
 	end
 	if (GetConVar("ulx_logChat"):GetInt() > 0) then
@@ -114,3 +123,13 @@ notifications:addParam{type = ULib.cmds.StringArg, hint = "Type", completes = no
 notifications:addParam{type = ULib.cmds.NumArg, default = 5, min = 3, max = 15, hint = "duration", ULib.cmds.optional}
 notifications:defaultAccess(ULib.ACCESS_ADMIN)
 notifications:help("Send a sandbox-type notification to players.")
+
+-- Workaround hack due to ULIB.csay update.
+if (CLIENT) then
+	net.Receive("ulxcc_csay", function (len, ply)
+		local message = net.ReadString()
+		local color = net.ReadColor()
+		ULib.csayDraw( message, color )
+		Msg( message .. "\n" )
+	end)
+end
