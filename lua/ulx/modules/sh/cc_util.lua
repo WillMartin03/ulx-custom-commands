@@ -7,13 +7,13 @@ function ulx.give(calling_ply, target_plys, ent, bSilent)
 	for _, v in ipairs(target_plys) do
 		if (!v:Alive()) then
 			ULib.tsayError(calling_ply, v:Nick() .. " is dead!", true)
-			return
+			continue
 		elseif (v:IsFrozen()) then
 			ULib.tsayError(calling_ply, v:Nick() .. " is frozen!", true)
-			return
+			continue
 		elseif (v:InVehicle()) then
 			ULib.tsayError(calling_ply, v:Nick() .. " is in a vehicle.", true)
-			return
+			continue
 		else
 			local wep = v:Give(ent)
 			if not wep:IsWeapon() then
